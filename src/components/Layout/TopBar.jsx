@@ -17,7 +17,7 @@ export default function TopBar() {
       case 'viewer': return currentFile?.name || 'Document Viewer';
       case 'scanner': return 'Scanner';
       case 'settings': return 'Settings';
-      default: return 'NovaDocs';
+      default: return 'AnyViewer';
     }
   };
 
@@ -58,7 +58,7 @@ export default function TopBar() {
         </motion.button>
 
         <div className="topbar__breadcrumb">
-          <span>NovaDocs</span>
+          <span>AnyViewer</span>
           <span className="topbar__breadcrumb-sep">/</span>
           <span className="topbar__breadcrumb-current">{getPageTitle()}</span>
         </div>

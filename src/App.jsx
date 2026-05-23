@@ -20,7 +20,7 @@ export const ToastContext = createContext();
 export const AppContext = createContext();
 
 // ─── IndexedDB helpers ───
-const DB_NAME = 'NovaDocs';
+const DB_NAME = 'AnyViewer';
 const DB_VERSION = 1;
 const STORE = 'recentFiles';
 
@@ -72,7 +72,7 @@ async function dbClear() {
 
 function App() {
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('novadocs-theme') || 'dark';
+    return localStorage.getItem('anyviewer-theme') || 'dark';
   });
   const [currentPage, setCurrentPage] = useState('home');
   const [currentFile, setCurrentFile] = useState(null);
@@ -92,7 +92,7 @@ function App() {
 
   // Apply saved font size on mount
   useEffect(() => {
-    const saved = localStorage.getItem('novadocs-fontsize');
+    const saved = localStorage.getItem('anyviewer-fontsize');
     if (saved) document.documentElement.style.fontSize = saved + 'px';
   }, []);
 
@@ -102,8 +102,8 @@ function App() {
       setRecentFiles([]);
       dbClear();
     };
-    window.addEventListener('novadocs:clearRecent', handler);
-    return () => window.removeEventListener('novadocs:clearRecent', handler);
+    window.addEventListener('anyviewer:clearRecent', handler);
+    return () => window.removeEventListener('anyviewer:clearRecent', handler);
   }, []);
 
   // Global keyboard shortcut: Escape closes file
@@ -121,7 +121,7 @@ function App() {
   const toggleTheme = useCallback(() => {
     setTheme(prev => {
       const next = prev === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('novadocs-theme', next);
+      localStorage.setItem('anyviewer-theme', next);
       return next;
     });
   }, []);

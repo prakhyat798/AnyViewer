@@ -155,7 +155,7 @@ export default function ScannerView() {
       pdf.addImage(scan.image, 'JPEG', 10, 10, imgWidth, imgHeight);
     });
 
-    pdf.save(`NovaDocs_Scan_${Date.now()}.pdf`);
+    pdf.save(`AnyViewer_Scan_${Date.now()}.pdf`);
     addToast({ type: 'success', title: 'PDF Exported', message: `${scannerScans.length} pages saved.` });
   }, [scannerScans, addToast]);
 

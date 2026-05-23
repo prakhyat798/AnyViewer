@@ -18,16 +18,16 @@ export default function SettingsPage() {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const { recentFiles, navigate } = useContext(AppContext);
   const [fontSize, setFontSize] = useState(() => {
-    return parseInt(localStorage.getItem('novadocs-fontsize') || '16', 10);
+    return parseInt(localStorage.getItem('anyviewer-fontsize') || '16', 10);
   });
   const [density, setDensity] = useState(() => {
-    return localStorage.getItem('novadocs-density') || 'comfortable';
+    return localStorage.getItem('anyviewer-density') || 'comfortable';
   });
 
   const handleFontSize = (delta) => {
     setFontSize(prev => {
       const next = Math.min(Math.max(prev + delta, 12), 22);
-      localStorage.setItem('novadocs-fontsize', String(next));
+      localStorage.setItem('anyviewer-fontsize', String(next));
       document.documentElement.style.fontSize = next + 'px';
       return next;
     });
@@ -35,12 +35,12 @@ export default function SettingsPage() {
 
   const handleDensity = (d) => {
     setDensity(d);
-    localStorage.setItem('novadocs-density', d);
+    localStorage.setItem('anyviewer-density', d);
   };
 
   const clearRecentFiles = () => {
     // Dispatch a custom event that App.jsx listens to
-    window.dispatchEvent(new CustomEvent('novadocs:clearRecent'));
+    window.dispatchEvent(new CustomEvent('anyviewer:clearRecent'));
   };
 
   return (
@@ -183,7 +183,7 @@ export default function SettingsPage() {
           <div>
             <div className="settings__item-label">
               <Layers size={15} style={{ marginRight: 8, verticalAlign: 'middle', color: 'var(--accent)' }} />
-              NovaDocs
+              AnyViewer
             </div>
             <div className="settings__item-desc">Universal Document Viewer &amp; Scanner · OxygenOS 16 Liquid Glass</div>
           </div>

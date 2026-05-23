@@ -58,7 +58,7 @@ export default function Sidebar() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1, type: 'spring', stiffness: 300, damping: 25 }}
           >
-            NovaDocs
+            AnyViewer
           </motion.span>
         )}
       </div>
