@@ -1,0 +1,277 @@
+/* ============================================
+   NovaDocs — Design System
+   OxygenOS 16 Liquid Glass × Material You
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ─── CSS Reset ─── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  line-height: 1.2;
+}
+
+button {
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+input, textarea {
+  font-family: 'Inter', sans-serif;
+  border: none;
+  outline: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* ─── Dark Theme (Default) ─── */
+:root,
+[data-theme="dark"] {
+  --bg-primary: #07070d;
+  --bg-secondary: #0e0e18;
+  --bg-surface: rgba(255, 255, 255, 0.035);
+  --bg-surface-hover: rgba(255, 255, 255, 0.06);
+  --bg-glass: rgba(255, 255, 255, 0.05);
+  --bg-glass-strong: rgba(255, 255, 255, 0.08);
+  --bg-glass-border: rgba(255, 255, 255, 0.08);
+
+  --accent: #7c6aff;
+  --accent-hover: #9182ff;
+  --accent-subtle: rgba(124, 106, 255, 0.12);
+  --accent-glow: rgba(124, 106, 255, 0.35);
+  --accent-text: #b4a8ff;
+
+  --secondary-accent: #4ae8c7;
+  --tertiary-accent: #ff6b9d;
+
+  --text-primary: #ececf1;
+  --text-secondary: rgba(236, 236, 241, 0.55);
+  --text-tertiary: rgba(236, 236, 241, 0.3);
+  --text-inverse: #0a0a0f;
+
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+
+  --success: #4ade80;
+  --success-subtle: rgba(74, 222, 128, 0.12);
+  --warning: #fbbf24;
+  --warning-subtle: rgba(251, 191, 36, 0.12);
+  --danger: #f87171;
+  --danger-subtle: rgba(248, 113, 113, 0.12);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px var(--accent-glow);
+
+  --gradient-primary: linear-gradient(135deg, #7c6aff 0%, #4ae8c7 100%);
+  --gradient-secondary: linear-gradient(135deg, #7c6aff 0%, #ff6b9d 100%);
+  --gradient-surface: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  --gradient-hero: linear-gradient(135deg, #7c6aff 0%, #4ae8c7 50%, #ff6b9d 100%);
+
+  --blur-glass: blur(20px);
+  --blur-glass-strong: blur(40px);
+
+  color-scheme: dark;
+}
+
+/* ─── Light Theme ─── */
+[data-theme="light"] {
+  --bg-primary: #f5f5fa;
+  --bg-secondary: #eeeef5;
+  --bg-surface: rgba(0, 0, 0, 0.025);
+  --bg-surface-hover: rgba(0, 0, 0, 0.05);
+  --bg-glass: rgba(255, 255, 255, 0.65);
+  --bg-glass-strong: rgba(255, 255, 255, 0.8);
+  --bg-glass-border: rgba(0, 0, 0, 0.06);
+
+  --accent: #5b4cc4;
+  --accent-hover: #4a3db0;
+  --accent-subtle: rgba(91, 76, 196, 0.1);
+  --accent-glow: rgba(91, 76, 196, 0.2);
+  --accent-text: #5b4cc4;
+
+  --secondary-accent: #0ea57b;
+  --tertiary-accent: #d4366e;
+
+  --text-primary: #1a1a2e;
+  --text-secondary: rgba(26, 26, 46, 0.55);
+  --text-tertiary: rgba(26, 26, 46, 0.3);
+  --text-inverse: #ececf1;
+
+  --border: rgba(0, 0, 0, 0.06);
+  --border-hover: rgba(0, 0, 0, 0.12);
+
+  --success: #16a34a;
+  --success-subtle: rgba(22, 163, 74, 0.1);
+  --warning: #d97706;
+  --warning-subtle: rgba(217, 119, 6, 0.1);
+  --danger: #dc2626;
+  --danger-subtle: rgba(220, 38, 38, 0.1);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 20px var(--accent-glow);
+
+  --gradient-primary: linear-gradient(135deg, #5b4cc4 0%, #0ea57b 100%);
+  --gradient-secondary: linear-gradient(135deg, #5b4cc4 0%, #d4366e 100%);
+  --gradient-surface: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%);
+  --gradient-hero: linear-gradient(135deg, #5b4cc4 0%, #0ea57b 50%, #d4366e 100%);
+
+  --blur-glass: blur(20px);
+  --blur-glass-strong: blur(40px);
+
+  color-scheme: light;
+}
+
+/* ─── Spacing Tokens ─── */
+:root {
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 100px;
+  --radius-full: 50%;
+
+  --sidebar-width: 260px;
+  --sidebar-collapsed: 72px;
+  --topbar-height: 64px;
+
+  /* Spring easing — OxygenOS 16 bouncy feel */
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-bounce-strong: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-slower: 700ms;
+}
+
+/* ─── Typography ─── */
+.text-display {
+  font-family: 'Outfit', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.text-h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.text-h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.text-h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.text-body {
+  font-size: 0.938rem;
+  font-weight: 400;
+}
+
+.text-body-sm {
+  font-size: 0.813rem;
+  font-weight: 400;
+}
+
+.text-caption {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.text-gradient {
+  background: var(--gradient-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-glass-strong);
+  border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-hover);
+}
+
+/* ─── Selection ─── */
+::selection {
+  background: var(--accent-subtle);
+  color: var(--accent-text);
+}
