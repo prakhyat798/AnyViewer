@@ -1,92 +1,111 @@
-<div align="center">
+# AnyViewer 📄🔍
 
-# 📄🔍 AnyViewer
-
-**View Any Document. Scan Anything.**
-
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-
-*AnyViewer is a modern, responsive, and fully local web application that serves as a universal document viewer and camera-based document scanner. Built with React and designed with OxygenOS 16 "Liquid Glass" aesthetics, it provides a premium experience for managing and interacting with your files completely client-side in the browser.*
-
-[Explore Features](#-features) • [Installation](#-running-locally) • [Privacy Guarantee](#-privacy--security)
-</div>
-
-<hr/>
-
-## ✨ Features
-
-### 📑 Universal Document Viewer
-View a wide variety of file formats directly in your browser without any server-side processing:
-*   **PDF Documents (`.pdf`):** Full-featured viewer with zoom, page-jump navigation, text selection, and keyboard shortcuts.
-*   **Word Documents (`.doc`, `.docx`):** Beautifully rendered, styled document viewing engine powered by `mammoth`.
-*   **Spreadsheets (`.xls`, `.xlsx`, `.csv`):** Interactive grid viewer with multi-sheet tab support via `xlsx`.
-*   **Presentations (`.ppt`, `.pptx`):** Clean XML slide extractor displaying titles and formatted bulleted slide content.
-*   **Images (JPG, PNG, WebP, SVG):** Feature-rich viewer with mouse/touch drag panning, scroll-wheel zoom, and 90° rotation controls.
-*   **Text & Code (`.txt`, `.js`, `.json`, `.md`):** Syntax-highlighted text viewer with line numbers, copy-to-clipboard, and word wrap toggles.
-
-### 📸 Camera Document Scanner
-Turn your webcam or mobile camera into a powerful scanner app:
-*   [x] **Live Camera Feed:** Switch between available cameras seamlessly.
-*   [x] **Image Filters:** Apply Magic Color, Grayscale, or High Contrast Black & White thresholding to your captures instantly.
-*   [x] **Multi-page Scanning:** Take multiple photos, reorder them in a gallery, and export them as a single native compiled PDF.
-
-### 🎨 Premium UI & Theming
-*   **Dynamic Themes:** Smoothly switch between beautiful Light and Dark modes.
-*   **Layout Density:** Choose between Compact, Comfortable, or Spacious reading interfaces.
-*   **Accessibility:** Configurable base font sizes right from the fluid settings page.
-
-### 💾 Local Persistence
-*   **Recent Files Tracker:** Automatically tracks your recent documents and uses IndexedDB to securely persist them offline across browser reloads.
-*   **Fast Search:** Live-filtering search bar to instantly find recently opened files on the homepage.
+Seamlessly view and scan any document format entirely inside your browser using a modern local React engine.
 
 ---
 
-## 🛠️ Technology Stack
+## Why AnyViewer?
 
-| Core | Document Parsers | UI / UX |
-| :--- | :--- | :--- |
-| **React 18** (UI Library) | **`react-pdf`** (PDF.js Engine) | **Vanilla CSS Custom Vars** |
-| **Vite** (Build Tool) | **`mammoth`** (DOCX Parsing) | **Framer Motion** (Spring Physics) |
-| **IndexedDB** (Persistence) | **`xlsx`** (SheetJS) | **Lucide-React** (Iconography) |
-| **JSZip** (Archiving) | **`jspdf`** (PDF Generation) | **Glassmorphism** (Design System) |
+Tired of installing bulky local software to open different file formats? This application automates the workflow of document management by unifying PDFs, Word docs, Spreadsheets, and Physical Scans into one beautiful interface!
 
----
+![AnyViewer Hero Banner](./public/docs/banner.png)
 
-## 🚀 Running Locally
-
-Because AnyViewer is entirely client-side, setup is incredibly fast with zero backend requirements.
-
-### Quick Start:
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/prakhyat798/AnyViewer.git
-   cd AnyViewer
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
-
-4. Open `http://localhost:5173` in your browser and enjoy!
+| The Old Way | AnyViewer Automation |
+| :--- | :--- |
+| **Separate Apps** for PDF, Word, Excel | **Unified Engine** handles all formats |
+| **Phone Cameras** for blurry scans | **Built-in Scanner** with threshold filters |
+| **Cloud Tracking** uploading your data | **100% Local** memory processing |
+| **Static files** scattered in folders | **IndexedDB** recent file persistence |
 
 ---
 
-## 🔒 Privacy & Security Guaranteed
+## 🚀 Installation & Setup
 
-🛡️ Let's be clear: **100% Local.** 
-AnyViewer **never** uploads your files to a server. All document parsing, rendering, and camera scanning happens strictly within your browser's local memory. You can even run the app completely disconnected from the Internet!
+AnyViewer relies on an incredibly powerful, self-hosted React engine to instantly render your documents without using cloud telemetry or expensive subscriptions.
+
+**To use this application, you must install the node modules on your machine.**
+
+### 1. Download the Engine
+Clone our official repository to your machine.
+```bash
+git clone https://github.com/prakhyat798/AnyViewer.git
+cd AnyViewer
+```
+
+### 2. Boot the Client
+Once you have cloned the Engine onto your computer:
+1. Run `npm install` to grab the dependencies.
+2. Hit `npm run dev` in your terminal. Vite will silently boot the React instance in the background!
+3. Open the provided `localhost` link to access the dashboard.
 
 ---
 
-<div align="center">
-<i>Designed and engineered with precision.</i>
-</div>
+## 🔌 Key Features
+
+### ✂️ Intelligent Format Parsers
+* Extracts raw text from `.docx` using Mammoth and `.pptx` using JSZip.
+* Preserves sheet tabs and row formatting while rendering massive `.xlsx` and `.csv` files.
+
+### 📸 Smart Asset Management
+```javascript
+// File naming templates automatically manage your scan exports:
+fileName: `AnyViewer_Scan_${Date.now()}.pdf`
+```
+* Custom grayscale and high-contrast neural filters.
+* Multi-page PDF packing directly in the browser cache.
+
+---
+
+## 🔗 Usage Workflow
+
+1. **Boot** ➞ Run `npm run dev`
+2. **Drop** ➞ Drag a file completely offline into the UI.
+3. **Scan** ➞ Hit "Start Scanner" to process physical notes.
+4. **Filter** ➞ Apply Magic Color or Grayscale.
+5. **Export** ➞ Automatically saved as a flawless PDF!
+
+---
+
+## 🌐 Compatibility
+
+| Environment | Support |
+| :--- | :--- |
+| **Framework** | React 18, Vite |
+| **Engine OS** | Win/Mac/Linux browsers |
+| **Mobile Web** | Fully Responsive UI |
+
+*Note on Mobile: The application works flawlessly on mobile browsers. You can point your phone to your desktop's local IP address over Wi-Fi to use your phone's camera as the native scanner!*
+
+---
+
+## 🤝 Contributing
+
+Help improve multi-format detection, batch processing, or UI mechanics! Feel free to suggest changes via PRs or open an issue using our provided `.github` templates.
+
+---
+
+## 📄 License
+
+MIT License — See [LICENSE](./LICENSE).
+
+---
+
+## 💡 Why This Name?
+
+AnyViewer combines:
+* **Any** (universal format acceptance)
+* **Viewer** (displaying them beautifully)
+
+---
+
+## 🌌 Support
+
+Found a bug? Want to help keep the lights on for this open source architecture?
+
+* 🐛 **GitHub Issues**: [Issue Tracker](https://github.com/prakhyat798/AnyViewer/issues)
+* 💻 **Repository**: [AnyViewer](https://github.com/prakhyat798/AnyViewer)
+
+---
+
+> **From the Developer**
+> *"This application was born from countless hours spent opening bloated software just to read a simple Word Doc or PDF. What started as an experiment with PDF.js evolved into an obsession with building a massive localized document engine to bridge analog and digital knowledge. May your documents live forever in both paper and pixels!"*
