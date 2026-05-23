@@ -85,9 +85,7 @@ export default function Sidebar() {
             whileTap={{ scale: 0.97, x: 4 }}
           >
             <item.icon className="sidebar__nav-icon" size={20} />
-            {!sidebarCollapsed && (
-              <span className="sidebar__nav-label">{item.label}</span>
-            )}
+            <span className="sidebar__nav-label">{item.label}</span>
           </motion.button>
         ))}
 
@@ -115,11 +113,9 @@ export default function Sidebar() {
                 whileTap={{ scale: 0.97 }}
               >
                 <FileText className="sidebar__nav-icon" size={16} />
-                {!sidebarCollapsed && (
-                  <span className="sidebar__nav-label" style={{ fontSize: '0.8rem' }}>
-                    {file.name}
-                  </span>
-                )}
+                <span className="sidebar__nav-label" style={{ fontSize: '0.8rem' }}>
+                  {file.name}
+                </span>
               </motion.button>
             ))}
           </>

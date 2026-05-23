@@ -5,7 +5,7 @@
 /* ─── App Shell ─── */
 .app-shell {
   display: flex;
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   background: var(--bg-primary);
   color: var(--text-primary);
@@ -83,7 +83,7 @@
 /* ─── Sidebar ─── */
 .sidebar {
   width: var(--sidebar-width);
-  height: 100vh;
+  height: 100dvh;
   background: var(--bg-glass);
   backdrop-filter: var(--blur-glass);
   -webkit-backdrop-filter: var(--blur-glass);
@@ -1808,95 +1808,40 @@
   display: none;
 }
 
-/* ─── Responsive ─── */
+/* ─── Responsive: Tablet ─── */
 @media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 100;
-    transform: translateX(-100%);
-    transition: transform var(--duration-slow) var(--ease-bounce);
-    height: 100dvh;
-  }
-
-  .sidebar--mobile-open {
-    transform: translateX(0);
-  }
-
-  /* Hide desktop sidebar space on mobile */
-  .app-shell > .sidebar:not(.sidebar--mobile-open) {
-    width: 0;
-  }
-
-  .topbar__menu-btn {
-    display: flex;
-  }
-
-  .topbar__center {
-    max-width: 180px;
-  }
-
-  .home {
-    padding: var(--space-md);
-  }
-
-  .home__hero {
-    padding: var(--space-2xl) 0 var(--space-lg);
-  }
-
-  .home__hero-title {
-    font-size: clamp(1.6rem, 6vw, 2.4rem);
-  }
-
-  .recent-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  }
-
-  .viewer__toolbar {
-    flex-wrap: wrap;
-    gap: var(--space-sm);
-  }
-
-  .viewer__filename {
-    max-width: 160px;
-  }
-
-  .scan-gallery__grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  }
-
-  .settings {
-    padding: var(--space-lg);
-  }
-
-  .toast-container {
-    bottom: var(--space-sm);
-    right: var(--space-sm);
-    left: var(--space-sm);
-  }
-
-  .toast {
-    min-width: 0;
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
+  /* ── App Shell: stack vertically with bottom nav ── */
   .app-shell {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
-  
+
+  /* ── Sidebar → Bottom Tab Bar ── */
   .sidebar {
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto !important;
     width: 100% !important;
-    height: auto;
+    height: auto !important;
+    max-height: none;
+    transform: none !important;
     border-right: none;
     border-top: 1px solid var(--border);
     flex-direction: row;
     justify-content: space-around;
     padding: 0;
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     background: var(--bg-glass-strong);
+    z-index: 100;
+  }
+
+  /* Override any collapsed / mobile-open classes on mobile */
+  .sidebar--collapsed,
+  .sidebar--mobile-open {
+    width: 100% !important;
+    transform: none !important;
   }
 
   .sidebar__header {
@@ -1906,7 +1851,8 @@
   .sidebar__nav {
     flex-direction: row;
     justify-content: space-around;
-    padding: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    padding-bottom: max(var(--space-xs), env(safe-area-inset-bottom));
     width: 100%;
     gap: 0;
     overflow-x: auto;
@@ -1914,10 +1860,17 @@
 
   .sidebar__nav-item {
     flex-direction: column;
-    padding: var(--space-xs);
-    gap: 4px;
+    padding: var(--space-xs) var(--space-sm);
+    gap: 2px;
     justify-content: center;
-    border-radius: var(--radius-sm);
+    align-items: center;
+    border-radius: var(--radius-md);
+    min-width: 56px;
+    font-size: 0.75rem;
+  }
+
+  .sidebar__nav-item:hover {
+    transform: none;
   }
 
   .sidebar__nav-icon {
@@ -1925,10 +1878,11 @@
   }
 
   .sidebar__nav-label {
-    font-size: 0.65rem;
-    opacity: 1;
-    width: auto;
+    font-size: 0.625rem;
+    opacity: 1 !important;
+    width: auto !important;
     display: block;
+    text-align: center;
   }
 
   .sidebar__section-title,
@@ -1937,40 +1891,213 @@
     display: none;
   }
 
+  /* ── Hide mobile menu button (we have bottom nav now) ── */
+  .topbar__menu-btn {
+    display: none;
+  }
+
+  /* ── Hide sidebar overlay ── */
+  .sidebar-overlay {
+    display: none;
+  }
+
+  /* ── TopBar adjustments ── */
   .topbar {
     padding: 0 var(--space-md);
+    height: 52px;
   }
 
   .topbar__center {
     display: none;
   }
 
-  .home__hero-title {
-    font-size: 2rem;
+  .topbar__breadcrumb {
+    font-size: 0.813rem;
   }
-  
+
+  /* ── Content wrapper: ensure scrolling works ── */
+  .app-shell__content-wrapper {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .app-shell__main {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* Pad bottom so content isn't hidden behind bottom tab bar */
+    padding-bottom: 72px;
+  }
+
+  /* ── Home page mobile ── */
+  .home {
+    padding: var(--space-md);
+    padding-bottom: var(--space-md);
+  }
+
+  .home__hero {
+    padding: var(--space-lg) 0 var(--space-md);
+  }
+
+  .home__hero-title {
+    font-size: clamp(1.5rem, 6vw, 2.2rem);
+  }
+
+  .home__hero-subtitle {
+    font-size: 0.938rem;
+  }
+
+  /* ── Drop zone ── */
+  .dropzone {
+    padding: var(--space-xl) var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+
+  .dropzone__icon svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* ── Recent / Format grid ── */
   .recent-grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--space-sm);
+  }
+
+  .glass-card {
+    padding: var(--space-md);
+  }
+
+  .glass-card__icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: var(--space-sm);
+  }
+
+  .glass-card__title {
+    font-size: 0.813rem;
+  }
+
+  .glass-card__meta {
+    font-size: 0.688rem;
+  }
+
+  /* ── Viewer ── */
+  .viewer__toolbar {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .viewer__filename {
+    max-width: 160px;
+    font-size: 0.813rem;
+  }
+
+  .viewer__content {
+    padding: var(--space-md);
+  }
+
+  /* ── Scanner ── */
+  .scan-gallery__grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+
+  /* ── Settings ── */
+  .settings {
+    padding: var(--space-lg);
+  }
+
+  /* ── Toasts: above the bottom nav ── */
+  .toast-container {
+    bottom: 72px;
+    right: var(--space-sm);
+    left: var(--space-sm);
+  }
+
+  .toast {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* ── Image viewer mobile ── */
+  .image-viewer__img {
+    max-width: 95vw;
+    max-height: 70vh;
+  }
+
+  .image-viewer__controls {
+    bottom: var(--space-md);
   }
 }
 
+/* ─── Responsive: Small phones ─── */
 @media (max-width: 480px) {
+  .home__hero {
+    padding: var(--space-md) 0;
+  }
+
+  .home__hero-title {
+    font-size: clamp(1.3rem, 7vw, 1.8rem);
+  }
+
+  .home__hero-subtitle {
+    font-size: 0.875rem;
+  }
+
   .home__actions {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--space-sm);
   }
 
   .btn--lg {
     width: 100%;
     justify-content: center;
+    height: 48px;
   }
 
   .topbar {
     padding: 0 var(--space-sm);
     gap: var(--space-xs);
+    height: 48px;
+  }
+
+  .topbar__icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
   }
 
   .dropzone {
-    padding: var(--space-xl) var(--space-md);
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  .recent-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-sm);
+  }
+
+  .glass-card {
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .glass-card__icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .settings {
+    padding: var(--space-md);
+  }
+
+  .modal {
+    margin: var(--space-sm);
+    max-height: calc(100vh - 80px);
   }
 }
