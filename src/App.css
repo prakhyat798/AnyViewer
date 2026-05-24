@@ -1639,38 +1639,6 @@
   gap: var(--space-sm);
 }
 
-.pptx-viewer__slide-number {
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--text-tertiary);
-}
-
-.pptx-viewer__canvas {
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  overflow: hidden;
-  width: 100%;
-  min-height: 200px;
-  position: relative;
-  /* Isolate from dark theme — the library handles its own colors */
-  color-scheme: light;
-  isolation: isolate;
-}
-
-/* Style the pptx-viewer library's internal container */
-.pptx-viewer__canvas > div {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-.pptx-viewer__canvas svg {
-  width: 100% !important;
-  height: auto !important;
-  display: block;
-}
-
 .pptx-viewer__nav {
   display: flex;
   align-items: center;
