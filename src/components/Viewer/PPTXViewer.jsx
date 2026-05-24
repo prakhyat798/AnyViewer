@@ -1,73 +1,125 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Presentation } from 'lucide-react';
-
-// Basic PPTX viewer — extracts text content from XML slides
-// Full pixel-perfect rendering requires a full PPTX engine; this shows content cleanly.
-async function extractSlides(file) {
-  const JSZip = (await import('jszip')).default;
-  let arrayBuffer;
-  if (file.data instanceof File || file.data instanceof Blob) {
-    arrayBuffer = await file.data.arrayBuffer();
-  } else if (file.url) {
-    const res = await fetch(file.url);
-    arrayBuffer = await res.arrayBuffer();
-  }
-
-  const zip = await JSZip.loadAsync(arrayBuffer);
-
-  // Get slide files in order
-  const slideFiles = Object.keys(zip.files)
-    .filter(name => /^ppt\/slides\/slide\d+\.xml$/.test(name))
-    .sort((a, b) => {
-      const na = parseInt(a.match(/\d+/)[0], 10);
-      const nb = parseInt(b.match(/\d+/)[0], 10);
-      return na - nb;
-    });
-
-  const slides = await Promise.all(slideFiles.map(async (name, idx) => {
-    const xmlText = await zip.file(name).async('string');
-    // Extract all text runs from the slide
-    const textMatches = [...xmlText.matchAll(/<a:t[^>]*>([^<]*)<\/a:t>/g)];
-    const rawTexts = textMatches.map(m => m[1].replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'")).filter(t => t.trim());
-
-    // Group by paragraph (a:p) to separate heading from body
-    const paraMatches = [...xmlText.matchAll(/<a:p[^>]*>([\s\S]*?)<\/a:p>/g)];
-    const paragraphs = paraMatches.map(m => {
-      const inner = m[1];
-      const texts = [...inner.matchAll(/<a:t[^>]*>([^<]*)<\/a:t>/g)]
-        .map(t => t[1].replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'"))
-        .join('');
-      return texts.trim();
-    }).filter(Boolean);
-
-    return {
-      index: idx + 1,
-      title: paragraphs[0] || `Slide ${idx + 1}`,
-      body: paragraphs.slice(1),
-    };
-  }));
-
-  return slides;
-}
+import { ChevronLeft, ChevronRight, Maximize2, Presentation } from 'lucide-react';
+import {
+  loadPresentation,
+  renderSlideToElement,
+  getThumbnails,
+} from 'pptx-viewer';
 
 export default function PPTXViewer({ file }) {
-  const [slides, setSlides] = useState([]);
+  const containerRef = useRef(null);
+  const thumbStripRef = useRef(null);
+  const presentationRef = useRef(null);
+  const [slideCount, setSlideCount] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [thumbnails, setThumbnails] = useState([]);
 
+  // Load the presentation
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError(null);
 
-    extractSlides(file)
-      .then(s => { if (!cancelled) { setSlides(s); setLoading(false); }})
-      .catch(err => { if (!cancelled) { setError(err.message); setLoading(false); }});
+    async function load() {
+      setLoading(true);
+      setError(null);
+      setCurrentSlide(0);
+      setThumbnails([]);
 
-    return () => { cancelled = true; };
+      try {
+        // Get the file source (File object or blob URL)
+        let source;
+        if (file.data instanceof File || file.data instanceof Blob) {
+          source = file.data;
+        } else if (file.url) {
+          const res = await fetch(file.url);
+          source = await res.arrayBuffer();
+        } else {
+          throw new Error('No file data available');
+        }
+
+        const presentation = await loadPresentation(source);
+
+        if (cancelled) {
+          presentation.cleanup();
+          return;
+        }
+
+        presentationRef.current = presentation;
+        const count = presentation.slides.length;
+        setSlideCount(count);
+
+        // Render the first slide
+        if (containerRef.current && count > 0) {
+          containerRef.current.innerHTML = '';
+          renderSlideToElement(presentation, 0, containerRef.current);
+        }
+
+        // Generate thumbnails for the slide strip
+        try {
+          const thumbs = getThumbnails(presentation, 140);
+          if (!cancelled) {
+            setThumbnails(thumbs);
+          }
+        } catch {
+          // Thumbnails are optional — no error if they fail
+        }
+
+        if (!cancelled) setLoading(false);
+      } catch (err) {
+        if (!cancelled) {
+          setError(err.message || 'Failed to load presentation');
+          setLoading(false);
+        }
+      }
+    }
+
+    load();
+
+    return () => {
+      cancelled = true;
+      if (presentationRef.current) {
+        presentationRef.current.cleanup();
+        presentationRef.current = null;
+      }
+    };
   }, [file]);
+
+  // Navigate to a specific slide
+  const goToSlide = useCallback((index) => {
+    if (!presentationRef.current || !containerRef.current) return;
+    if (index < 0 || index >= slideCount) return;
+
+    containerRef.current.innerHTML = '';
+    renderSlideToElement(presentationRef.current, index, containerRef.current);
+    setCurrentSlide(index);
+  }, [slideCount]);
+
+  // Keyboard navigation (scoped to this viewer)
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        goToSlide(currentSlide + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        goToSlide(currentSlide - 1);
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [currentSlide, goToSlide]);
+
+  // Auto-scroll the active thumbnail into view
+  useEffect(() => {
+    if (thumbStripRef.current) {
+      const active = thumbStripRef.current.querySelector('.pptx-viewer__thumb--active');
+      if (active) {
+        active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  }, [currentSlide]);
 
   if (loading) {
     return <div className="pdf-viewer__loading"><div className="spinner" /></div>;
@@ -82,7 +134,7 @@ export default function PPTXViewer({ file }) {
     );
   }
 
-  if (slides.length === 0) {
+  if (slideCount === 0) {
     return (
       <div className="empty-state">
         <Presentation size={48} />
@@ -92,63 +144,66 @@ export default function PPTXViewer({ file }) {
     );
   }
 
-  const slide = slides[currentSlide];
-
   return (
     <div className="pptx-viewer">
-      {/* Slide display */}
-      <motion.div
-        className="pptx-viewer__slide"
-        key={currentSlide}
-        initial={{ opacity: 0, x: 40, scale: 0.97 }}
-        animate={{ opacity: 1, x: 0, scale: 1 }}
-        exit={{ opacity: 0, x: -40, scale: 0.97 }}
-        transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-      >
+      {/* Slide display — rendered by pptx-viewer library */}
+      <div className="pptx-viewer__slide-wrapper">
         <div className="pptx-viewer__slide-number">
-          Slide {slide.index} / {slides.length}
+          Slide {currentSlide + 1} / {slideCount}
         </div>
-        <div className="pptx-viewer__title">{slide.title}</div>
-        {slide.body.length > 0 && (
-          <ul className="pptx-viewer__body">
-            {slide.body.map((line, i) => (
-              <li key={i}>{line}</li>
-            ))}
-          </ul>
-        )}
-      </motion.div>
+        <div
+          ref={containerRef}
+          className="pptx-viewer__canvas"
+        />
+      </div>
 
       {/* Navigation */}
-      {slides.length > 1 && (
+      {slideCount > 1 && (
         <div className="pptx-viewer__nav">
           <motion.button
             className="btn btn--ghost btn--icon btn--sm"
-            onClick={() => setCurrentSlide(s => Math.max(s - 1, 0))}
+            onClick={() => goToSlide(currentSlide - 1)}
             disabled={currentSlide <= 0}
             whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
             style={{ opacity: currentSlide <= 0 ? 0.3 : 1 }}
           ><ChevronLeft size={18} /></motion.button>
 
-          <div className="pptx-viewer__thumb-strip">
-            {slides.map((s, i) => (
-              <motion.button
-                key={i}
-                className={`pptx-viewer__thumb ${i === currentSlide ? 'pptx-viewer__thumb--active' : ''}`}
-                onClick={() => setCurrentSlide(i)}
-                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-              >
-                <span className="pptx-viewer__thumb-num">{i + 1}</span>
-                <span className="pptx-viewer__thumb-title">{s.title}</span>
-              </motion.button>
-            ))}
+          <div className="pptx-viewer__thumb-strip" ref={thumbStripRef}>
+            {thumbnails.length > 0
+              ? thumbnails.map((thumbSvg, i) => (
+                  <motion.button
+                    key={i}
+                    className={`pptx-viewer__thumb pptx-viewer__thumb--visual ${i === currentSlide ? 'pptx-viewer__thumb--active' : ''}`}
+                    onClick={() => goToSlide(i)}
+                    whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                    ref={(el) => {
+                      if (el && !el.dataset.rendered) {
+                        el.innerHTML = '';
+                        el.appendChild(thumbSvg.cloneNode(true));
+                        el.dataset.rendered = 'true';
+                      }
+                    }}
+                  />
+                ))
+              : Array.from({ length: slideCount }, (_, i) => (
+                  <motion.button
+                    key={i}
+                    className={`pptx-viewer__thumb ${i === currentSlide ? 'pptx-viewer__thumb--active' : ''}`}
+                    onClick={() => goToSlide(i)}
+                    whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                  >
+                    <span className="pptx-viewer__thumb-num">{i + 1}</span>
+                  </motion.button>
+                ))
+            }
           </div>
 
           <motion.button
             className="btn btn--ghost btn--icon btn--sm"
-            onClick={() => setCurrentSlide(s => Math.min(s + 1, slides.length - 1))}
-            disabled={currentSlide >= slides.length - 1}
+            onClick={() => goToSlide(currentSlide + 1)}
+            disabled={currentSlide >= slideCount - 1}
             whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-            style={{ opacity: currentSlide >= slides.length - 1 ? 0.3 : 1 }}
+            style={{ opacity: currentSlide >= slideCount - 1 ? 0.3 : 1 }}
           ><ChevronRight size={18} /></motion.button>
         </div>
       )}
