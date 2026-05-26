@@ -259,3 +259,32 @@ graph TD
 ```
 
 Estimated total: ~25-30 files across components, styles, and utilities.
+
+---
+
+## Mobile Packaging (APK Generation)
+
+To provide an actual APK file for users to download from the GitHub repository, we will package the web application into an Android app using **Capacitor**. 
+
+Since local Android SDK builds can be bulky and complex, we will automate this process using **GitHub Actions**.
+
+### Proposed Workflow:
+1. **Install Capacitor**: Add `@capacitor/core`, `@capacitor/cli`, and `@capacitor/android` to the project.
+2. **Initialize Capacitor**: Configure `capacitor.config.json` with the app details (`com.anyviewer.app`).
+3. **Add Android Platform**: Run `npx cap add android` to generate the Android project structure.
+4. **GitHub Actions Workflow**: Create `.github/workflows/build-apk.yml`.
+   - The workflow will trigger on pushes or manually.
+   - It will set up Node.js and Java, install dependencies, build the Vite web app, sync it with Capacitor, and then compile the Android APK using Gradle.
+   - Finally, it will upload the built APK as a workflow artifact and potentially attach it to a GitHub Release.
+5. **Open Browser**: Automatically open the GitHub Repository/Releases page in Chrome using a local script.
+
+## User Review Required
+
+> [!IMPORTANT]
+> **GitHub Actions for APK Build**: Building the APK via GitHub Actions avoids the need for a local Android Studio installation. It will take a few minutes to run on GitHub's servers after we push the code. Are you okay with pushing these Capacitor files and GitHub Actions workflow to your repository so it can build the APK?
+
+## Open Questions
+
+> [!IMPORTANT]
+> 1. Do you want the GitHub Action to create a new **GitHub Release** automatically, or just upload the APK as a workflow artifact that you can manually attach to a release?
+> 2. Are you already authenticated with Git locally so we can push these changes to your repository (`prakhyat798/AnyViewer`)?
